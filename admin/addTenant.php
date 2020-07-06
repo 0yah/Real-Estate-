@@ -104,11 +104,11 @@
             <span id="houseStatus"></span>
         </div>
         <form>
-            <input id="firstname" type="text" />
-            <input id="secondname" type="text" />
-            <input id="phonenumber" type="text" />
-            <input id="email" type="email" />
-            <input id="password" type="password" />
+            <input id="firstname" placeholder="First Name" type="text" />
+            <input id="secondname" placeholder="Second Name" type="text" />
+            <input id="phonenumber" placeholder="Phone Number" type="text" />
+            <input id="email" placeholder="E-mail" type="email" />
+            <input id="password" placeholder="Password" type="password" />
             <button type="button" id="addNewTenant">Add Tenant</button>
         </form>
 
@@ -118,8 +118,8 @@
             <span id="modal-close">X</span>
         </div>
         <div class="modal-body">
-            
-        
+
+
         </div>
         <div class="modal-footer">
 
@@ -129,6 +129,39 @@
 </body>
 
 <script>
+    var selectedHouseID = null;
+    var selectedHouseCourt = null;
+
+    document.querySelector('#addNewTenant').addEventListener('click', function() {
+        var tenantfirstName = document.querySelector('#firstname').value;
+        var tenantsecondName = document.querySelector('#secondname').value;
+        var tenantphoneNumber = document.querySelector('#phonenumber').value;
+        var tenantEmail = document.querySelector('#email').value;
+        var tenantPassword = document.querySelector('#password').value;
+
+        console.log(selectedHouseID, tenantfirstName, tenantsecondName, tenantphoneNumber, tenantEmail, tenantPassword);
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+
+                document.querySelector('#firstname').value = "";
+                document.querySelector('#secondname').value = "";
+                document.querySelector('#phonenumber').value = "";
+                document.querySelector('#email').value = "";
+                document.querySelector('#password').value = "";
+
+            }
+        };
+
+        xhttp.open("POST", "admin.php", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`newTenant&houseID=${selectedHouseID}&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}&password=${password}`);
+
+
+    });
+
+
+
     function generateTable(target, data) {
         var body = document.querySelector(target);
         body.innerHTML = "";
@@ -239,28 +272,27 @@
 
 
 
+
     document.querySelector('#modal-close').addEventListener('click', function() {
 
         document.querySelector('.modal').style.display = "none";
         document.querySelector('.layout').style.filter = "none";
     });
 
-    setTimeout(function(){
+    setTimeout(function() {
 
         document.querySelectorAll('.controller').forEach((value, index) => {
-        console.log(value);
-        value.addEventListener('click', function() {
-            console.log(value.innerHTML);
-            document.querySelector('.modal').style.display = "block";
-            document.querySelector('.layout').style.filter = "blur(3px)";
+            // console.log(value);
+            value.addEventListener('click', function() {
+                //   console.log(value.innerText);
+                document.querySelector('.modal').style.display = "block";
+                document.querySelector('.layout').style.filter = "blur(3px)";
+                selectedHouseID = value.innerText;
 
-
+            });
         });
-    });
 
-    },3000);
-
-
+    }, 3000);
 </script>
 
 </html>

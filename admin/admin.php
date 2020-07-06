@@ -30,19 +30,19 @@ if(isset($_GET['loadHouses'])){
     //$Status = 1;
 
     if($Status == 1){
-        $sql_get_house = "SELECT HouseNo,Court,BedRooms As 'Bed Rooms',Area,Rent FROM `house` WHERE HouseStatus = 'Available'";
+        $sql_get_house = "SELECT HouseID As 'ID',HouseNo,Court,BedRooms As 'Bed Rooms',Area,Rent FROM `house` WHERE HouseStatus = 'Available'";
     }else if($Status == 2){
         
-        $sql_get_house = "SELECT HouseNo,Court,BedRooms As 'Bed Rooms' ,Area,Rent FROM `house` WHERE HouseStatus = 'Occupied'";
+        $sql_get_house = "SELECT HouseID As 'ID',HouseNo,Court,BedRooms As 'Bed Rooms' ,Area,Rent FROM `house` WHERE HouseStatus = 'Occupied'";
     }else if($Status == 3){
         
-        $sql_get_house = "SELECT HouseNo,Court,BedRooms As 'Bed Rooms',Area,Rent FROM `house` WHERE HouseStatus = 'Maintainance'";
+        $sql_get_house = "SELECT HouseID As 'ID',HouseNo,Court,BedRooms As 'Bed Rooms',Area,Rent FROM `house` WHERE HouseStatus = 'Maintainance'";
     }else if($Status == 4){
         
-        $sql_get_house = "SELECT HouseNo,Court,BedRooms As 'Bed Rooms',Area,Rent FROM `house` WHERE HouseStatus = 'Out of Service'";
+        $sql_get_house = "SELECT HouseID As 'ID',HouseNo,Court,BedRooms As 'Bed Rooms',Area,Rent FROM `house` WHERE HouseStatus = 'Out of Service'";
     }
     else{
-        $sql_get_house = "SELECT  HouseNo,Court,BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house`";
+        $sql_get_house = "SELECT  HouseID As 'ID',HouseNo,Court,BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house`";
     }
 
 
@@ -93,18 +93,22 @@ if(isset($_GET['findHouse'])){
 
 if(isset($_POST['newTenant'])){
 
-    $courtName = $_POST['courtName'];
-    $houseNumber =$_POST['houseNumber'];
-    $houseBedroom =$_POST['houseBedroom'];
-    $houseRent =$_POST['houseRent'];
-    $houseArea =$_POST['houseArea'];
-    $houseStatus = "Available";
+    $houseID = $_POST['houseID'];
+    $firstname = $_POST['firstname'];
+    $secondname =$_POST['secondname'];
+    $phonenumber =$_POST['phonenumber'];
+    $email =$_POST['email'];
+    $password =$_POST['password'];
+    $houseStatus = "Booked";
     $addedDate = date("Y-m-d H:i:s");
 
-    $sql_add_house = "INSERT INTO `house` (`HouseID`, `HouseNo`, `Court`, `BedRooms As 'Bed Rooms'`, `Area`,`Rent`, `HouseStatus`, `CreatedDate`) 
-    VALUES (NULL, '$houseNumber', '$courtName', '$houseBedroom', '$houseArea','$houseRent', '$houseStatus', '$addedDate' )";
-
-    mysqli_query($database_connection, $sql_add_house);
+    $sql_book_house = "UPDATE `house` SET `HouseStatus` = '$houseStatus' WHERE `house`.`HouseID` = '$houseID'";
+    $sql_new_user = "INSERT INTO `user` (`UserID`, `FirstName`, `SecondName`, `PhoneNumber`, `isAdmin`, `Email`, `Pass`, `JoinedDate`) VALUES 
+    (NULL, '$firstname', '$secondname', '$phonenumber','false', '$email', '$password', '$addedDate')";
+    mysqli_query($database_connection, $sql_new_user);
+    $user_id = $database_connection->insert_id;
+    $sql_new_tenant = "INSERT INTO `tenant` (`TenantID`, `UserID`, `HouseID`) VALUES (NULL, '$user_id', '$houseID')";
+    mysqli_query($database_connection, $sql_new_tenant);
 
 
 
