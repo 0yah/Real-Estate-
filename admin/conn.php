@@ -42,8 +42,6 @@ mysqli_query($conn,$create_user_table);
 $create_house_table="CREATE TABLE IF NOT EXISTS House( 
 
     HouseID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-    HouseNo VARCHAR(500),
-    Court VARCHAR(500),
     BedRooms INT NOT NULL,
     Area INT NOT NULL,
     Rent INT NOT NULL,
@@ -61,10 +59,13 @@ mysqli_query($conn,$create_house_table);
 
 $create_tenant_table = "CREATE TABLE IF NOT EXISTS Tenant (
         TenantID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        UserID INT,
         HouseID INT,
+        FirstName VARCHAR(500) NOT NULL,
+        SecondName VARCHAR(500) NOT NULL,
+        PhoneNumber VARCHAR(500) NOT NULL,
+        Email varchar(255) NOT NULL,
 
-        FOREIGN KEY (UserID) REFERENCES User(UserID),
+
         FOREIGN KEY (HouseID) REFERENCES House(HouseID)
 );";
 
@@ -84,24 +85,6 @@ $create_rent_table = "CREATE TABLE IF NOT EXISTS Rent (
 );";
 
 mysqli_query($conn,$create_rent_table);
-
-
-$createMpesaTable="CREATE TABLE  IF NOT EXISTS Mpesa (
-	MpesaID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    RentID INT,
-	CheckoutRequestID varchar(255),
-    PaymentDate varchar(255),
-    Receipt varchar(255),
-    Payment varchar(255),
-    FOREIGN KEY (RentID) REFERENCES Rent(RentID)
-
-
-);";
-
-mysqli_query($conn,$createMpesaTable);
-
-
-
 
 
 

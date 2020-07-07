@@ -116,7 +116,6 @@
             <input id="secondname" placeholder="Second Name" type="text" />
             <input id="phonenumber" placeholder="Phone Number" type="text" />
             <input id="email" placeholder="E-mail" type="email" />
-            <input id="password" placeholder="Password" type="password" />
             <button type="button" id="addNewTenant">Add Tenant</button>
         </form>
 
@@ -137,9 +136,8 @@
         var tenantsecondName = document.querySelector('#secondname').value;
         var tenantphoneNumber = document.querySelector('#phonenumber').value;
         var tenantEmail = document.querySelector('#email').value;
-        var tenantPassword = document.querySelector('#password').value;
-
-        console.log(selectedHouseID, tenantfirstName, tenantsecondName, tenantphoneNumber, tenantEmail, tenantPassword);
+      
+        //console.log(selectedHouseID, tenantfirstName, tenantsecondName, tenantphoneNumber, tenantEmail, tenantPassword);
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
@@ -148,14 +146,13 @@
                 document.querySelector('#secondname').value = "";
                 document.querySelector('#phonenumber').value = "";
                 document.querySelector('#email').value = "";
-                document.querySelector('#password').value = "";
-
+              
             }
         };
 
         xhttp.open("POST", "admin.php", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(`newTenant&houseID=${selectedHouseID}&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}&password=${tenantPassword}`);
+        xhttp.send(`newTenant&houseID=${selectedHouseID}&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}`);
 
 
     });
@@ -211,7 +208,7 @@
 
         } else {
             var errorMessage = document.createElement('span');
-            errorMessage.innerHTML = 'No House Found';
+            errorMessage.innerHTML = 'No <a href="houses.php">Houses</a> available';
 
             body.appendChild(errorMessage);
 
@@ -225,7 +222,7 @@
 
     }
 
-    function loadHouses(status = 0) {
+    function loadHouses(status = 1) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {

@@ -81,6 +81,11 @@ include('./conn.php');
         .modal-body table tr:hover {
             background-color: #e2d8d8;
         }
+
+        #updateTenantView ,#rentRecordView{
+            display: none;
+
+        }
     </style>
 </head>
 
@@ -98,11 +103,34 @@ include('./conn.php');
         <div class="modal-body">
             <div class=".houseInfo">
                 <span id="HouseID"></span>
-                <span id="HouseNo"></span>
-                <span id="HouseCourt"></span>
                 <span id="HouseRent"></span>
                 <span id="HouseStatus"></span>
             </div>
+
+            <button id="editTenant">Edit</button>
+            <button id="rentTenant">Rent Record</button>
+            <div id="updateTenantView">
+            <form>
+            <input id="updateFirstname" placeholder="First Name" type="text" />
+            <input id="updateSecondname" placeholder="Second Name" type="text" />
+            <input id="updatePhonenumber" placeholder="Phone Number" type="text" />
+            <input id="updateEmail" placeholder="E-mail" type="email" />
+            <button type="button" id="updateTenant">Update Tenant</button>
+            <button type="button" id="addNewTenant">Delete</button>
+            
+            </form>
+            </div>
+
+            <div id="rentRecordView">
+                <form action="">
+                    <input type="date" name="" id="rentMonth">
+                    <input type="number" name="" id="rentAmount">
+                    <button type="button" id="addRentRecord">Add</button>
+                </form>
+            </div>
+
+            
+
             <div class="rentHistory">
 
             </div>
@@ -115,9 +143,80 @@ include('./conn.php');
 
     <script>
         var selectedTenantID = null;
-        var selectedHouseCourt = null;
+        var selectedHouseID = null;
+  
+
+        document.querySelector('#addRentRecord').addEventListener('click',function(){
+
+            var rentMonth = document.querySelector('#rentMonth').value;
+            //document.querySelector('#rentMonth').value;
+
+            var rentAmount = document.querySelector('#rentAmount').value;
+            var nd = new Date(rentMonth);
+            console.log(rentMonth,rentAmount,selectedTenantID,selectedHouseID);
+            
+            //document.querySelector('#rentAmount').value;
+
+            var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+
+                document.querySelector('#rentMonth').value = "";
+                document.querySelector('#rentAmount').value = "";
+              
+            }
+        };
+
+        xhttp.open("POST", "admin.php", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`addRent&tenantID=${selectedTenantID}&houseID=${selectedHouseID}&rentMonth=${rentMonth}&rentAmount=${rentAmount}`);
 
 
+
+            
+        });
+
+        document.querySelector('#editTenant').addEventListener('click',function(){
+            
+            document.querySelector('#updateTenantView').style.display = 'block';
+            document.querySelector('#rentRecordView').style.display = 'none';
+            
+        });
+
+        document.querySelector('#rentTenant').addEventListener('click',function(){
+            
+            document.querySelector('#updateTenantView').style.display = 'none';
+            document.querySelector('#rentRecordView').style.display = 'block';
+            
+        });
+
+        document.querySelector('#updateTenant').addEventListener('click',function(){
+
+
+            var tenantfirstName = document.querySelector('#updateFirstname').value;
+        var tenantsecondName = document.querySelector('#updateSecondname').value;
+        var tenantphoneNumber = document.querySelector('#updatePhonenumber').value;
+        var tenantEmail = document.querySelector('#updateEmail').value;
+      
+        //console.log(selectedHouseID, tenantfirstName, tenantsecondName, tenantphoneNumber, tenantEmail, tenantPassword);
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+
+                document.querySelector('#updateFirstname').value = "";
+                document.querySelector('#updateSecondname').value = "";
+                document.querySelector('#updatePhonenumber').value = "";
+                document.querySelector('#updateEmail').value = "";
+              
+            }
+        };
+
+        xhttp.open("POST", "admin.php", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`updateTenant&tenantID=${selectedTenantID}&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}`);
+
+
+        });
 
 
 
@@ -215,9 +314,8 @@ include('./conn.php');
                     // console.log(this.responseText);
 
                     var data = JSON.parse(this.responseText);
+                    selectedHouseID = data.House[0].HouseID;
                     document.querySelector('#HouseID').innerHTML = data.House[0].HouseID;
-                    document.querySelector('#HouseNo').innerHTML = data.House[0].HouseNo;
-                    document.querySelector('#HouseCourt').innerHTML = data.House[0].Court;
                     document.querySelector('#HouseRent').innerHTML = data.House[0].Rent;
                     document.querySelector('#HouseStatus').innerHTML = data.House[0].HouseStatus;
                     console.log(data.Rent);
