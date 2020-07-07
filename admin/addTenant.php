@@ -103,6 +103,14 @@
             <span id="houseBedrooms"></span>
             <span id="houseStatus"></span>
         </div>
+
+
+    </div>
+    <div class="modal">
+        <div class="modal-header">
+            <span id="modal-close">X</span>
+        </div>
+        <div class="modal-body">
         <form>
             <input id="firstname" placeholder="First Name" type="text" />
             <input id="secondname" placeholder="Second Name" type="text" />
@@ -111,14 +119,6 @@
             <input id="password" placeholder="Password" type="password" />
             <button type="button" id="addNewTenant">Add Tenant</button>
         </form>
-
-    </div>
-    <div class="modal">
-        <div class="modal-header">
-            <span id="modal-close">X</span>
-        </div>
-        <div class="modal-body">
-
 
         </div>
         <div class="modal-footer">

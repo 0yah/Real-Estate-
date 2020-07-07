@@ -76,7 +76,8 @@ $create_rent_table = "CREATE TABLE IF NOT EXISTS Rent (
     TenantID INT,
     HouseID INT,
     Amount INT,
-
+    Month DATE NOT NULL,
+    CreatedDate DATETIME NOT NULL,
     FOREIGN KEY (TenantID) REFERENCES Tenant(TenantID),
     FOREIGN KEY (HouseID) REFERENCES House(HouseID)
     
