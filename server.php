@@ -65,6 +65,8 @@ if (isset($_POST['login_user'])) {
   $username = mysqli_real_escape_string($database_connection, $_POST['username']);
   $password = mysqli_real_escape_string($database_connection, $_POST['password']);
 
+  echo $username;
+  echo $password;
   if (empty($username)) {
   	array_push($errors, "Username is required");
   }
@@ -73,8 +75,8 @@ if (isset($_POST['login_user'])) {
   }
 
   if (count($errors) == 0) {
-  	$password = md5($password);
-  	$query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+  	//$password = md5($password);
+  	$query = "SELECT * FROM user WHERE Email='$username' AND Pass='$password'";
   	$results = mysqli_query($database_connection, $query);
   	if (mysqli_num_rows($results) == 1) {
   	  $_SESSION['username'] = $username;

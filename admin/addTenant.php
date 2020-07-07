@@ -155,7 +155,7 @@
 
         xhttp.open("POST", "admin.php", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(`newTenant&houseID=${selectedHouseID}&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}&password=${password}`);
+        xhttp.send(`newTenant&houseID=${selectedHouseID}&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}&password=${tenantPassword}`);
 
 
     });
