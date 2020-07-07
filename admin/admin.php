@@ -13,10 +13,11 @@ if (isset($_POST['addHouse'])) {
     $houseStatus = "Available";
     $addedDate = date("Y-m-d H:i:s");
 
-    $sql_add_house = "INSERT INTO `house` (`HouseID`, `HouseNo`, `Court`, `BedRooms As 'Bed Rooms'`, `Area`,`Rent`, `HouseStatus`, `CreatedDate`) 
-    VALUES (NULL, '$houseNumber', '$courtName', '$houseBedroom', '$houseArea','$houseRent', '$houseStatus', '$addedDate' )";
 
+    $sql_add_house = "INSERT INTO `house` (`HouseID`, `HouseNo`, `Court`, `BedRooms`, `Area`, `Rent`, `HouseStatus`, `CreatedDate`) 
+    VALUES (NULL, '$houseNumber', '$courtName', '$houseBedroom', '$houseArea', '$houseRent', '$houseStatus', '$addedDate')";
     mysqli_query($database_connection, $sql_add_house);
+    
 }
 
 if (isset($_GET['loadHouses'])) {
