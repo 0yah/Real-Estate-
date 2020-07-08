@@ -6,38 +6,43 @@ include('./conn.php');
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-    <nav>
-        <ul>
-            <li><a href="addHouse.php">Add House</a></li>
-            <li><a href="addTenant.php">Add Tenant</a></li>
-            <li><a href="houses.php">Houses</a></li>
-            <li><a href="tenants.php">Tenants</a></li>
-            <li><a href="rent.php">Rent</a></li>
-            <li><a href="../logout.php">Log out</a></li>
-        </ul>
-    </nav>
-
-    <div>
-        Show summary of the system
-
-        no of tenants
-        no of houses
-        revenue
-        <div id="revenue"></div>
-        <div id="houses"></div>
-        <div id="tenants"></div>
+    <div class="layout">
+        <div class="left">
+            <nav class="nav">
+                <ul>
+                    <li><a href="addHouse.php">Add House</a></li>
+                    <li><a href="addTenant.php">Add Tenant</a></li>
+                    <li><a href="houses.php">Houses</a></li>
+                    <li><a href="tenants.php">Tenants</a></li>
+                    <li><a href="rent.php">Rent</a></li>
+                    <li><a href="../logout.php">Log out</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="right">
+            <div class="summary">
+                <div id="revenue"></div>
+                <div id="houses"></div>
+                <div id="tenants"></div>
+            </div>
+        </div>
     </div>
 
-    <script>
 
-        function loadInfo(){
+
+
+    <script>
+        function loadInfo() {
 
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
@@ -66,4 +71,5 @@ include('./conn.php');
         loadInfo();
     </script>
 </body>
+
 </html>

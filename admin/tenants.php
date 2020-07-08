@@ -10,6 +10,7 @@ include('./conn.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tenants</title>
+    <link rel="stylesheet" href="styles.css">
 
     <style>
         body {
@@ -92,10 +93,26 @@ include('./conn.php');
 <body>
 
     <div class="layout">
+        <div class="left">
+            <nav class="nav">
+                <ul>
+                    <li><a href="addHouse.php">Add House</a></li>
+                    <li><a href="addTenant.php">Add Tenant</a></li>
+                    <li><a href="houses.php">Houses</a></li>
+                    <li><a href="tenants.php">Tenants</a></li>
+                    <li><a href="rent.php">Rent</a></li>
+                    <li><a href="../logout.php">Log out</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="right">
         <div class="loadTenants">
 
+</div>
         </div>
     </div>
+
+
     <div class="modal">
         <div class="modal-header">
             <span id="modal-close">X</span>

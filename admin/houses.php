@@ -10,84 +10,34 @@ include('./conn.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Houses</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             margin: 0px;
             position: relative;
         }
 
-        table {
-            background-color: white;
-        }
 
-        .layout {
-            position: relative;
-            filter: blur(0px);
-            height: 100vh;
-        }
-
-        .modal {
-            position: absolute;
-            top: 0;
-            background-color: white;
-            border-radius: 5px;
-            padding: 5px;
-            overflow-x: scroll;
-            display: none;
-            top: 25%;
-            left: 10%
-        }
-
-        .modal::-webkit-scrollbar {
-            display: none;
-        }
-
-        .modal-header {
-            position: relative;
-
-        }
-
-        .modal-header span {
-            position: absolute;
-            right: 0;
-            top: 0;
-            font-size: 0.8em;
-        }
-
-        .modal-body {
-            margin: 20px;
-
-        }
-
-        .modal-body table {}
-
-        .modal-body table th {
-            background-color: blue;
-            color: white;
-            padding: 5px;
-        }
-
-        .modal-body table th,
-        .modal-body table td {
-            border: 1px solid #ddd;
-        }
-
-
-        .modal-body table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        .modal-body table tr:hover {
-            background-color: #e2d8d8;
-        }
     </style>
 </head>
 
 <body>
 
-    <div class="layout">
 
-    <a href="addHouse.php">Add House</a>
+<div class="layout">
+        <div class="left">
+            <nav class="nav">
+                <ul>
+                    <li><a href="addHouse.php">Add House</a></li>
+                    <li><a href="addTenant.php">Add Tenant</a></li>
+                    <li><a href="houses.php">Houses</a></li>
+                    <li><a href="tenants.php">Tenants</a></li>
+                    <li><a href="rent.php">Rent</a></li>
+                    <li><a href="../logout.php">Log out</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="right">
         <form>
             <select id="filterHouseStatus">
                     <option value="1">Available</option>
@@ -103,10 +53,21 @@ include('./conn.php');
         <div class="loadHouses">
 
         </div>
+        </div>
+    </div>
+
+
+
+    <div class="layout">
+
+    <a href="addHouse.php">Add House</a>
+        
     </div>
     <div class="modal">
+    <span class="modal-title">Add House</span>
         <div class="modal-header">
             <span id="modal-close">X</span>
+
         </div>
         <div class="modal-body">
             <div class="tenantInfo">
@@ -336,7 +297,6 @@ document.querySelector('#filterHouseStatus').addEventListener('change',function(
                 value.addEventListener('click', function() {
                     console.log(value.innerText);
                     document.querySelector('.modal').style.display = "block";
-                    document.querySelector('.layout').style.filter = "blur(3px)";
                     selectHouseID = value.innerText;
                     houseInfo(selectHouseID);
 
