@@ -1,10 +1,11 @@
 <?php
 
 include('../server.php');
-include('./conn.php');
+//include('./conn.php');
 
 if (isset($_POST['addHouse'])) {
 
+    $houseNo = $_POST['houseNo'];
     $houseBedroom = $_POST['houseBedroom'];
     $houseRent = $_POST['houseRent'];
     $houseArea = $_POST['houseArea'];
@@ -12,9 +13,21 @@ if (isset($_POST['addHouse'])) {
     $addedDate = date("Y-m-d H:i:s");
 
 
-    $sql_add_house = "INSERT INTO `house` (`HouseID`, `BedRooms`, `Area`, `Rent`, `HouseStatus`, `CreatedDate`) VALUES (NULL,
-     '$houseBedroom', '$houseArea', '$houseRent', '$houseStatus', '$addedDate')";
+    $sql_add_house = "INSERT INTO `house` (`HouseID`, `HouseNo`, `BedRooms`, `Area`, `Rent`, `HouseStatus`, `CreatedDate`) 
+    VALUES (NULL, '$houseNo', '$houseBedroom', '$houseArea', '$houseRent', '$houseStatus', '$houseStatus')";
     mysqli_query($database_connection, $sql_add_house);
+
+    $last_id = $database_connection->insert_id;
+    if($last_id>0){
+        echo 'Success';
+    }else{
+        echo 'Error';
+    }
+
+
+
+
+
 
 }
 
@@ -102,6 +115,14 @@ if (isset($_POST['newTenant'])) {
     $sql_new_tenant = "INSERT INTO `tenant` (`TenantID`, `HouseID`, `FirstName`, `SecondName`, `PhoneNumber`, `Email`) VALUES (NULL,
      '$houseID', '$firstname', '$secondname', '$phonenumber', '$email')";
     mysqli_query($database_connection, $sql_new_tenant);
+
+    $last_id = $database_connection->insert_id;
+    if($last_id>0){
+        echo 'Success';
+    }else{
+        echo 'Error';
+    }
+
 
 }
 
@@ -265,16 +286,23 @@ if (isset($_GET['loadHouseInfo'])) {
 if(isset($_POST['updateHouse'])){
 
     $houseID = $_POST['houseID'];
-    $courtName = $_POST['courtName'];
     $houseNumber = $_POST['houseNumber'];
     $houseBedroom = $_POST['houseBedroom'];
     $houseRent = $_POST['houseRent'];
     $houseArea = $_POST['houseArea'];
     $houseStatus = $_POST['houseStatus'];
-    echo $houseID;
+    //echo $houseID;
 
-    $sql_update_house =  "UPDATE `house` SET  `BedRooms` = '$houseBedroom', `Area` = '$houseArea', `Rent` = '$houseRent', `HouseStatus` = '$houseStatus' WHERE `house`.`HouseID` = '$houseID'";
+    $sql_update_house =  "UPDATE `house` SET  `HouseNo` = '$houseNumber', `BedRooms` = '$houseBedroom', `Area` = '$houseArea', `Rent` = '$houseRent', `HouseStatus` = '$houseStatus' WHERE `house`.`HouseID` = '$houseID'";
     mysqli_query($database_connection,$sql_update_house);
+
+
+    $deleted_rows = $database_connection->affected_rows;
+    if($deleted_rows > 0){
+        echo 'Success';
+    }else{
+        echo 'Error';
+    }
 
 }
 
@@ -284,6 +312,13 @@ if(isset($_POST['deleteHouse'])){
     
     $sql_delete_house =  "DELETE FROM `house` WHERE `house`.`HouseID` = $houseID";
     mysqli_query($database_connection,$sql_delete_house);
+
+    $deleted_rows = $database_connection->affected_rows;
+    if($deleted_rows > 0){
+        echo 'Success';
+    }else{
+        echo 'Error';
+    }
 
 }
 
@@ -314,10 +349,33 @@ if(isset($_POST['addUser'])){
     $password = $_POST['password'];
     $addedDate = date("Y-m-d H:i:s");
 
-    $sql_new_user = "INSERT INTO `user` (`UserID`, `FirstName`, `SecondName`, `PhoneNumber`, `isAdmin`, `Email`, `Pass`, `JoinedDate`) VALUES 
-    (NULL, '$firstname', '$secondname', '$phonenumber','false', '$email', '$password', '$addedDate')";
-    mysqli_query($database_connection, $sql_new_user);
+
+
+    $userquery = "SELECT * FROM user WHERE  EMAIL='$email' LIMIT 1";
+	$AM = mysqli_query($database_connection, $userquery);
+	$bb = mysqli_fetch_assoc($AM);
+    if ($bb) {
+		if ($bb['Email'] === $email) {
+			echo 'Registered';
+		}
+	}else{
+
+
+        $sql_new_user = "INSERT INTO `user` (`UserID`, `FirstName`, `SecondName`, `PhoneNumber`, `Email`, `Pass`, `JoinedDate`) 
+        VALUES (NULL, '$firstname', '$secondname', '$phonenumber', '$email', '$password', '$addedDate');";
+        mysqli_query($database_connection, $sql_new_user);
+
+        $last_id = $database_connection->insert_id;
+        if($last_id>0){
+            echo 'Success';
+        }else{
+            echo 'Error';
+        }
+
+
+    }
     
+
 
 }
 
@@ -338,9 +396,14 @@ if(isset($_POST['updateUser'])){
 if(isset($_POST['deleteUser'])){
 
     $user_id = $_POST['userID'];
-    echo $user_id;
     $sql_delete_user = "DELETE FROM `user` WHERE `user`.`UserID` = $user_id";
     mysqli_query($database_connection, $sql_delete_user);
+    $deleted_rows = $database_connection->affected_rows;
+    if($deleted_rows > 0){
+        echo 'Success';
+    }else{
+        echo 'Error';
+    }
 
 
 }
@@ -362,8 +425,31 @@ if(isset($_POST['updateTenant'])){
 
     mysqli_query($database_connection, $sql_update_tenant);
 
+
+    $deleted_rows = $database_connection->affected_rows;
+    if($deleted_rows > 0){
+        echo 'Success';
+    }else{
+        echo 'Error';
+    }
+
 }
 
+
+if(isset($_POST['deleteTenant'])){
+
+    $tenantID = $_POST['tenantID'];
+    $sql_delete_tenant = "DELETE FROM `tenant` WHERE `tenant`.`TenantID` = $tenantID";
+    mysqli_query($database_connection, $sql_delete_tenant);
+    $deleted_rows = $database_connection->affected_rows;
+    if($deleted_rows > 0){
+        echo 'Success';
+    }else{
+        echo 'Error';
+    }
+
+
+}
 
 if(isset($_POST['addRent'])){
 
@@ -378,6 +464,15 @@ if(isset($_POST['addRent'])){
 
     $sql_add_rent = "INSERT INTO `rent` (`RentID`, `TenantID`, `HouseID`, `Amount`, `Month`, `CreatedDate`) VALUES (NULL, '$tenantID', '$houseID', '$rentAmount', '$rentMonth', '$addedDate')";
     mysqli_query($database_connection, $sql_add_rent);
+
+
+    $deleted_rows = $database_connection->affected_rows;
+    if($deleted_rows > 0){
+        echo 'Success';
+    }else{
+        echo 'Error';
+    }
+
 
 }
 
@@ -421,4 +516,3 @@ if(isset($_GET['loadRent'])){
     echo $myJSONResult;
 
 }
-?>

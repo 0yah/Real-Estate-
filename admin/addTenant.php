@@ -83,14 +83,33 @@
 
 <body>
 
+<nav class="nav">
+                <ul>
+<?php
+if(isset($_SESSION['username'])){
+    echo '<li><a href="addHouse.php">Add House</a></li>';
+    echo '<li><a href="houses.php">Houses</a></li>';
+    echo '<li><a href="tenants.php">Tenants</a></li>';
+    echo '<li><a href="rent.php">Rent</a></li>';
+    echo '<li><a href="../logout.php">Log out</a></li>'; 
+
+}
+?>
+
+
+                </ul>
+            </nav>
+
+
+
 
     <div class="layout">
         <div class="loadedHouses">
 
         </div>
         <form>
-            <input id="numberRooms" type="number" placeholder="Number of bedrooms" />
-            <input id="numberArea" type="number" placeholder="Area Sqft" />
+            <input id="numberRooms" type="number" min='1' placeholder="Number of bedrooms" />
+            <input id="numberArea" type="number" min='1' placeholder="Area Sqft" />
             <button id="findHouseBtn" type="button">Find</button>
         </form>
 
@@ -109,6 +128,7 @@
     <div class="modal">
         <div class="modal-header">
             <span id="modal-close">X</span>
+            <div>Allocate House</div>
         </div>
         <div class="modal-body">
         <form>
@@ -116,6 +136,7 @@
             <input id="secondname" placeholder="Second Name" type="text" />
             <input id="phonenumber" placeholder="Phone Number" type="text" />
             <input id="email" placeholder="E-mail" type="email" />
+            <div id="addTenantError"></div>
             <button type="button" id="addNewTenant">Add Tenant</button>
         </form>
 
@@ -131,28 +152,45 @@
     var selectedHouseID = null;
     var selectedHouseCourt = null;
 
-    document.querySelector('#addNewTenant').addEventListener('click', function() {
+        document.querySelector('#addNewTenant').addEventListener('click', function() {
         var tenantfirstName = document.querySelector('#firstname').value;
         var tenantsecondName = document.querySelector('#secondname').value;
         var tenantphoneNumber = document.querySelector('#phonenumber').value;
         var tenantEmail = document.querySelector('#email').value;
-      
-        //console.log(selectedHouseID, tenantfirstName, tenantsecondName, tenantphoneNumber, tenantEmail, tenantPassword);
+
+
+        if(tenantfirstName != '' && tenantEmail != '' && tenantsecondName != '' && tenantphoneNumber !=''){
+     
+                    //console.log(selectedHouseID, tenantfirstName, tenantsecondName, tenantphoneNumber, tenantEmail, tenantPassword);
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
 
+                var response = this.responseText;
                 document.querySelector('#firstname').value = "";
                 document.querySelector('#secondname').value = "";
                 document.querySelector('#phonenumber').value = "";
                 document.querySelector('#email').value = "";
               
+                if(response == "Success"){
+                    document.querySelector('#addTenantError').innerHTML = "Successfully allocated";
+                    
+        document.querySelector('.modal').style.display = "none";
+                }else if(response == "Error"){
+                    document.querySelector('#addTenantError').innerHTML = "Could not allocate the house";
+                }
             }
         };
 
         xhttp.open("POST", "admin.php", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(`newTenant&houseID=${selectedHouseID}&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}`);
+
+
+        }else{
+            document.querySelector('#addTenantError').innerHTML = "Fill all the fields";
+        }
+      
 
 
     });
@@ -208,7 +246,7 @@
 
         } else {
             var errorMessage = document.createElement('span');
-            errorMessage.innerHTML = 'No <a href="houses.php">Houses</a> available';
+            errorMessage.innerHTML = 'No free <a href="houses.php">Houses</a> available';
 
             body.appendChild(errorMessage);
 
@@ -283,7 +321,6 @@
             value.addEventListener('click', function() {
                 //   console.log(value.innerText);
                 document.querySelector('.modal').style.display = "block";
-                document.querySelector('.layout').style.filter = "blur(3px)";
                 selectedHouseID = value.innerText;
 
             });

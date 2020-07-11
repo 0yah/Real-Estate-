@@ -91,6 +91,23 @@ include('./conn.php');
 
 <body>
     <div class="layout">
+    <nav class="nav">
+                <ul>
+<?php
+if(isset($_SESSION['username'])){
+    echo '<li><a href="addHouse.php">Add House</a></li>';
+    echo '<li><a href="addTenant.php">Add Tenant</a></li>';
+    echo '<li><a href="houses.php">Houses</a></li>';
+    echo '<li><a href="tenants.php">Tenants</a></li>';
+    echo '<li><a href="rent.php">Rent</a></li>';
+    echo '<li><a href="../logout.php">Log out</a></li>'; 
+
+}
+?>
+
+
+                </ul>
+            </nav>
         <button id="addUserBtn">Add User</button>
         <div class="loadUsers">
 
@@ -110,6 +127,8 @@ include('./conn.php');
                     <input id="emailAdd" placeholder="E-mail" type="email" />
                     <input id="passwordAdd" placeholder="Password" type="password" />
                     <button type="button" id="addUser">Add</button>
+
+                    <div id="addUserError"></div>
                 </form>
             </div>
 
@@ -204,26 +223,46 @@ include('./conn.php');
             var tenantPassword = document.querySelector('#passwordAdd').value;
 
             //console.log(selectedHouseID, tenantfirstName, tenantsecondName, tenantphoneNumber, tenantEmail, tenantPassword);
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
 
-                    document.querySelector('#firstnameAdd').value = "";
-                    document.querySelector('#secondnameAdd').value = "";
-                    document.querySelector('#phonenumberAdd').value = "";
-                    document.querySelector('#emailAdd').value = "";
-                    document.querySelector('#passwordAdd').value = "";
-                    loadUsers();
+            if (tenantEmail != '' && tenantsecondName != '' && tenantfirstName != '' && tenantphoneNumber != '' && tenantPassword != '') {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
 
-                    document.querySelector('.modal').style.display = "none";
-                    document.querySelector('.layout').style.filter = "none";
+                        console.log(this.responseText);
+                        var response = this.responseText;
+                        if (response == 'Registered') {
 
-                }
-            };
+                            document.querySelector('#addUserError').innerHTML = "Email used";
+                        } else if (response == 'Success') {
 
-            xhttp.open("POST", "admin.php", true);
-            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send(`addUser&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}&password=${tenantPassword}`);
+                            document.querySelector('#firstnameAdd').value = "";
+                            document.querySelector('#secondnameAdd').value = "";
+                            document.querySelector('#phonenumberAdd').value = "";
+                            document.querySelector('#emailAdd').value = "";
+                            document.querySelector('#passwordAdd').value = "";
+                            loadUsers();
+
+                            document.querySelector('.modal').style.display = "none";
+                            document.querySelector('.layout').style.filter = "none";
+                        } else if (response == 'Error') {
+                            document.querySelector('#addUserError').innerHTML = "Something wrong happened check the fields and try again";
+                        }
+
+
+
+                    }
+                };
+
+                xhttp.open("POST", "admin.php", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send(`addUser&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}&password=${tenantPassword}`);
+
+
+            }else{
+                document.querySelector('#addUserError').innerHTML = "Fill in all the fiel";
+            }
+
 
 
         });
@@ -316,6 +355,8 @@ include('./conn.php');
 
                 document.querySelector('.modal').style.display = "none";
                 document.querySelector('.layout').style.filter = "none";
+                
+
             });
 
             document.querySelectorAll('.controller').forEach((value, index) => {
@@ -326,6 +367,8 @@ include('./conn.php');
                     document.querySelector('.layout').style.filter = "blur(3px)";
                     document.querySelector('#addUserView').style.display = "none";
                     document.querySelector('#updateUserView').style.display = "block";
+                    document.querySelector('#addUserError').innerHTML = "";
+
 
 
                     userID = value.innerText;
@@ -341,6 +384,8 @@ include('./conn.php');
                     document.querySelector('.modal').style.display = "block";
                     document.querySelector('.layout').style.filter = "blur(3px)";
                     //selectedHouseID = value.innerText;
+                    document.querySelector('#addUserView').style.display = "block";
+                    document.querySelector('#updateUserView').style.display = "none";
 
                 });
             });

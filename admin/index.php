@@ -1,6 +1,5 @@
 <?php
 include('../server.php');
-include('./conn.php');
 ?>
 
 

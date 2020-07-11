@@ -16,43 +16,50 @@ include('./conn.php');
             margin: 0px;
             position: relative;
         }
-
-
     </style>
 </head>
 
 <body>
 
 
-<div class="layout">
+    <div class="layout">
         <div class="left">
+
+
             <nav class="nav">
                 <ul>
-                    <li><a href="addHouse.php">Add House</a></li>
-                    <li><a href="addTenant.php">Add Tenant</a></li>
-                    <li><a href="houses.php">Houses</a></li>
-                    <li><a href="tenants.php">Tenants</a></li>
-                    <li><a href="rent.php">Rent</a></li>
-                    <li><a href="../logout.php">Log out</a></li>
+                    <?php
+                    if (isset($_SESSION['username'])) {
+                        echo '<li><a href="addHouse.php">Add House</a></li>';
+                        echo '<li><a href="addTenant.php">Add Tenant</a></li>';
+                        echo '<li><a href="houses.php">Houses</a></li>';
+                        echo '<li><a href="tenants.php">Tenants</a></li>';
+                        echo '<li><a href="rent.php">Rent</a></li>';
+                        echo '<li><a href="../logout.php">Log out</a></li>';
+                    }
+                    ?>
+
+
                 </ul>
             </nav>
         </div>
         <div class="right">
-        <form>
-            <select id="filterHouseStatus">
+            <form>
+                <select id="filterHouseStatus">
+                    <option selected disabled>Filter By Status</option>
                     <option value="1">Available</option>
                     <option value="5">Booked</option>
                     <option value="2">Occupied</option>
                     <option value="3">Maintainance</option>
                     <option value="4">Out of Service</option>
-            </select>
-            <input id="numberRooms" min="1" type="number" placeholder="Number of bedrooms" />
-            <input id="numberArea" type="number" placeholder="Area Sqft" />
-            <button id="findHouseBtn" type="button">Find</button>
-        </form>
-        <div class="loadHouses">
+                </select>
+                <input id="numberRooms" min="1" type="number" placeholder="Number of bedrooms" />
+                <input id="numberArea" type="number" placeholder="Area Sqft" />
+                <button id="findHouseBtn" type="button">Find</button>
+            </form>
+            <div class="loadHouses">
 
-        </div>
+            </div>
         </div>
     </div>
 
@@ -60,11 +67,11 @@ include('./conn.php');
 
     <div class="layout">
 
-    <a href="addHouse.php">Add House</a>
-        
+        <a href="addHouse.php">Add House</a>
+
     </div>
     <div class="modal">
-    <span class="modal-title">Add House</span>
+        <span class="modal-title">Update House</span>
         <div class="modal-header">
             <span id="modal-close">X</span>
 
@@ -76,14 +83,17 @@ include('./conn.php');
                 <span id="tenantPhone"></span>
             </div>
             <form>
-                <input id="updatehouseBedrooms" type="number" placeholder="No of Bedrooms" />
-                <input id="updatehouseRent" type="number" placeholder="Amount of Rent" />
-                <input id="updatehouseArea" type="number" placeholder="Area(m²)" />
+                <input id="updatehouseNumber" type="text" placeholder="House Number" />
+                <input id="updatehouseBedrooms" type="number" min='1'placeholder="No of Bedrooms" />
+                <input id="updatehouseRent" type="number" min='1' placeholder="Amount of Rent" />
+                <input id="updatehouseArea" type="number" min='1' placeholder="Area(m²)" />
                 <select id="updateHouseStatus">
+                <option selected disabled>Change Status</option>
                     <option value="Available">Available</option>
                     <option value="Maintainance">Maintainance</option>
                     <option value="Out of Service">Out of Service</option>
                 </select>
+                <div id="updateHouseError"></div>
                 <button type="button" id="updateHouseBtn">Update House</button>
                 <button type="button" id="deleteHouseBtn">Delete</button>
             </form>
@@ -214,37 +224,6 @@ include('./conn.php');
         });
 
 
-        document.querySelector('#updateHouseBtn').addEventListener('click', function() {
-
-            var courtName = document.querySelector('#updatecourtName').value;
-            var houseNumber = document.querySelector('#updatehouseNumber').value;
-            var houseBedroom = document.querySelector('#updatehouseBedrooms').value;
-            var houseRent = document.querySelector('#updatehouseRent').value;
-            var houseArea = document.querySelector('#updatehouseArea').value;
-
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    loadHouses();
-                    document.querySelector('#updatecourtName').value = "";
-                    document.querySelector('#updatehouseNumber').value = "";
-                    document.querySelector('#updatehouseBedrooms').value = "";
-                    document.querySelector('#updatehouseRent').value = "";
-                    document.querySelector('#updatehouseArea').value = "";
-
-
-                    document.querySelector('.modal').style.display = "none";
-                    document.querySelector('.layout').style.filter = "none";
-                }
-            };
-
-            xhttp.open("POST", "admin.php", true);
-            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send(`updateHouse&houseID=${selectHouseID}&courtName=${courtName}&houseNumber=${houseNumber}&houseBedroom=${houseBedroom}&houseArea=${houseArea}&houseRent=${houseRent}&houseStatus=${selectedStatus}`);
-            console.log(`updateHouse&houseID=${selectHouseID}&courtName=${courtName}&houseNumber=${houseNumber}&houseBedroom=${houseBedroom}&houseArea=${houseArea}&houseRent=${houseRent}&houseStatus=${selectedStatus}`);
-
-        });
-
 
         function houseInfo(houseID) {
             var xhttp = new XMLHttpRequest();
@@ -279,10 +258,10 @@ include('./conn.php');
 
         setTimeout(function() {
 
-document.querySelector('#filterHouseStatus').addEventListener('change',function(event){
-    loadHouses(event.target.value);
-    console.log(event.target.value);
-});
+            document.querySelector('#filterHouseStatus').addEventListener('change', function(event) {
+                loadHouses(event.target.value);
+                console.log(event.target.value);
+            });
 
             document.querySelector('#modal-close').addEventListener('click', function() {
 
@@ -298,7 +277,7 @@ document.querySelector('#filterHouseStatus').addEventListener('change',function(
                     console.log(value.innerText);
                     document.querySelector('.modal').style.display = "block";
                     selectHouseID = value.innerText;
-                    houseInfo(selectHouseID);
+                    //houseInfo(selectHouseID);
 
 
                 });
@@ -307,33 +286,52 @@ document.querySelector('#filterHouseStatus').addEventListener('change',function(
             document.querySelector('#updateHouseStatus').addEventListener('change', function(event) {
 
                 selectedStatus = event.target.value;
-                console.log(selectedStatus);
+                console.log("djksdjkds",selectedStatus);
             });
 
             document.querySelector('#updateHouseBtn').addEventListener('click', function() {
 
+                var houseNumber = document.querySelector('#updatehouseNumber').value;
                 var houseBedroom = document.querySelector('#updatehouseBedrooms').value;
                 var houseRent = document.querySelector('#updatehouseRent').value;
                 var houseArea = document.querySelector('#updatehouseArea').value;
 
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        loadHouses();
-                        document.querySelector('#updatehouseBedrooms').value = "";
-                        document.querySelector('#updatehouseRent').value = "";
-                        document.querySelector('#updatehouseArea').value = "";
+
+                if (houseArea != '' && houseBedroom != '' && houseNumber != '' && houseRent != '' && selectedStatus != null){
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+
+                            var response = this.responseText;
+                            console.log(response);
+                            if (response == "Success") {
+                                document.querySelector('#updateHouseError').innerHTML = "House updated!";
+                                document.querySelector('#updatehouseNumber').value = "";
+                                document.querySelector('#updatehouseBedrooms').value = "";
+                                document.querySelector('#updatehouseRent').value = "";
+                                document.querySelector('#updatehouseArea').value = "";
+                                loadHouses();
+
+                                document.querySelector('.modal').style.display = "none";
+                                document.querySelector('.layout').style.filter = "none";
+
+                            } else if (response == "Error") {
+                                document.querySelector('#updateHouseError').innerHTML = "House could not be updated!";
+
+                            }
+                        }
+                    };
+
+                    xhttp.open("POST", "admin.php", true);
+                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xhttp.send(`updateHouse&houseID=${selectHouseID}&houseNumber=${houseNumber}&houseBedroom=${houseBedroom}&houseArea=${houseArea}&houseRent=${houseRent}&houseStatus=${selectedStatus}`);
+                    console.log(`updateHouse&houseID=${selectHouseID}&houseNumber=${houseNumber}&houseBedroom=${houseBedroom}&houseArea=${houseArea}&houseRent=${houseRent}&houseStatus=${selectedStatus}`);
+
+                }else{
+                    document.querySelector('#updateHouseError').innerHTML = "Fill in all the fields";
+                }
 
 
-                        document.querySelector('.modal').style.display = "none";
-                        document.querySelector('.layout').style.filter = "none";
-                    }
-                };
-
-                xhttp.open("POST", "admin.php", true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send(`updateHouse&houseID=${selectHouseID}&houseBedroom=${houseBedroom}&houseArea=${houseArea}&houseRent=${houseRent}&houseStatus=${selectedStatus}`);
-                console.log(`updateHouse&houseID=${selectHouseID}&houseBedroom=${houseBedroom}&houseArea=${houseArea}&houseRent=${houseRent}&houseStatus=${selectedStatus}`);
 
             });
 
@@ -345,16 +343,24 @@ document.querySelector('#filterHouseStatus').addEventListener('change',function(
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
-                        loadHouses();
-                        document.querySelector('#updatecourtName').value = "";
-                        document.querySelector('#updatehouseNumber').value = "";
-                        document.querySelector('#updatehouseBedrooms').value = "";
-                        document.querySelector('#updatehouseRent').value = "";
-                        document.querySelector('#updatehouseArea').value = "";
 
 
-                        document.querySelector('.modal').style.display = "none";
-                        document.querySelector('.layout').style.filter = "none";
+                        var response = this.responseText;
+                        if (response == "Success") {
+                            document.querySelector('#updatecourtName').value = "";
+                            document.querySelector('#updatehouseNumber').value = "";
+                            document.querySelector('#updatehouseBedrooms').value = "";
+                            document.querySelector('#updatehouseRent').value = "";
+                            document.querySelector('#updatehouseArea').value = "";
+                            loadHouses();
+
+                            document.querySelector('.modal').style.display = "none";
+                            document.querySelector('.layout').style.filter = "none";
+                        } else if (response == "Error") {
+                            document.querySelector('#updateHouseError').innerHTML = "House could not be deleted!";
+
+                        }
+
                     }
                 };
 

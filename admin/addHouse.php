@@ -11,10 +11,30 @@
 
 <body>
 
+
+<nav class="nav">
+                <ul>
+<?php
+if(isset($_SESSION['username'])){
+    echo '<li><a href="addTenant.php">Add Tenant</a></li>';
+    echo '<li><a href="houses.php">Houses</a></li>';
+    echo '<li><a href="tenants.php">Tenants</a></li>';
+    echo '<li><a href="rent.php">Rent</a></li>';
+    echo '<li><a href="../logout.php">Log out</a></li>'; 
+
+}
+?>
+
+
+                </ul>
+            </nav>
+
     <form>
-        <input id="addhouseBedrooms" type="number" placeholder="No of Bedrooms" />
-        <input id="addhouseRent" type="number" placeholder="Amount of Rent" />
-        <input id="addhouseArea" type="number" placeholder="Area(m²)" />
+    <input id="addhouseNo" type="text" placeholder="House Number" />
+        <input id="addhouseBedrooms" type="number" min='1' placeholder="No of Bedrooms" />
+        <input id="addhouseRent" type="number" min='1' placeholder="Amount of Rent" />
+        <input id="addhouseArea" type="number" min='1' placeholder="Area(m²)" />
+        <div id="addHouseError"></div>
         <button type="button" id="addHouseBtn">Add House</button>
     </form>
 
@@ -27,19 +47,36 @@
         var houseBedroom = document.querySelector('#addhouseBedrooms').value;
         var houseRent = document.querySelector('#addhouseRent').value;
         var houseArea = document.querySelector('#addhouseArea').value;
+        var houseNo = document.querySelector('#addhouseNo').value;
 
-        var xhttp = new XMLHttpRequest();
+
+        if(houseArea != '' && houseBedroom != '' && houseNo!='' && houseRent != ''){
+
+            var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                document.querySelector('#addhouseBedrooms').value ="";
+
+                var response = this.responseText;
+                if(response=="Success"){
+                    document.querySelector('#addhouseBedrooms').value ="";
                 document.querySelector('#addhouseRent').value ="";
                 document.querySelector('#addhouseArea').value ="";
+                document.querySelector('#addhouseNo').value ="";
+                document.querySelector('#addHouseError').innerHTML="Successfully added";
+                }else if(response == "Error"){
+                    document.querySelector('#addHouseError').innerHTML="Something went wrong!";
+                }
+
             }
         };
 
         xhttp.open("POST", "admin.php", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(`addHouse&houseBedroom=${houseBedroom}&houseArea=${houseArea}&houseRent=${houseRent}`);
+        xhttp.send(`addHouse&houseNo=${houseNo}&houseBedroom=${houseBedroom}&houseArea=${houseArea}&houseRent=${houseRent}`);
+
+        }else{
+            document.querySelector('#addHouseError').innerHTML="Fill all the fields!";
+        }
 
 
     });
