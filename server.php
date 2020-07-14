@@ -65,8 +65,6 @@ if (isset($_POST['login_user'])) {
   $username = mysqli_real_escape_string($database_connection, $_POST['username']);
   $password = mysqli_real_escape_string($database_connection, $_POST['password']);
 
-  echo $username;
-  echo $password;
   if (empty($username)) {
   	array_push($errors, "Username is required");
   }
@@ -87,5 +85,7 @@ if (isset($_POST['login_user'])) {
   	}
   }
 }
+
+
 
 ?>

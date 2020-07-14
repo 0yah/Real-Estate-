@@ -87,28 +87,59 @@ include('./conn.php');
             display: none;
         }
     </style>
+
+<link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
-    <div class="layout">
-    <nav class="nav">
-                <ul>
-<?php
+
+
+
+
+<div class="navbar">
+    <?php 
+    
+    
 if(isset($_SESSION['username'])){
-    echo '<li><a href="addHouse.php">Add House</a></li>';
-    echo '<li><a href="addTenant.php">Add Tenant</a></li>';
-    echo '<li><a href="houses.php">Houses</a></li>';
-    echo '<li><a href="tenants.php">Tenants</a></li>';
-    echo '<li><a href="rent.php">Rent</a></li>';
-    echo '<li><a href="../logout.php">Log out</a></li>'; 
 
+
+    echo "
+    
+    
+    
+  <a href='index.php'>Dashboard</a>
+  
+  <div class='dropdown'>
+    <button class='dropbtn'>Houses 
+    </button>
+    <div class='dropdown-content'>
+      <a href='houses.php'>View All</a>
+      <a href='addHouse.php'>Add House</a>
+    </div>
+  </div> 
+  <a href='tenants.php'>Tenants</a>
+  <a href='rent.php'>Rent</a>
+
+  <div class='dropdown'>
+    <button class='dropbtn'>Users 
+    </button>
+    <div class='dropdown-content'>
+      <a href='user.php'>View All</a>
+      <a href='addUser.php'>Add User</a>
+    </div>
+  </div> 
+  <a href='../logout.php'>Log Out</a>
+    
+    ";
 }
-?>
 
 
-                </ul>
-            </nav>
-        <button id="addUserBtn">Add User</button>
+    ?>
+</div>
+
+
+    <div class="layout">
+  
         <div class="loadUsers">
 
         </div>
@@ -215,57 +246,7 @@ if(isset($_SESSION['username'])){
 
 
         }
-        document.querySelector('#addUser').addEventListener('click', function() {
-            var tenantfirstName = document.querySelector('#firstnameAdd').value;
-            var tenantsecondName = document.querySelector('#secondnameAdd').value;
-            var tenantphoneNumber = document.querySelector('#phonenumberAdd').value;
-            var tenantEmail = document.querySelector('#emailAdd').value;
-            var tenantPassword = document.querySelector('#passwordAdd').value;
 
-            //console.log(selectedHouseID, tenantfirstName, tenantsecondName, tenantphoneNumber, tenantEmail, tenantPassword);
-
-            if (tenantEmail != '' && tenantsecondName != '' && tenantfirstName != '' && tenantphoneNumber != '' && tenantPassword != '') {
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-
-                        console.log(this.responseText);
-                        var response = this.responseText;
-                        if (response == 'Registered') {
-
-                            document.querySelector('#addUserError').innerHTML = "Email used";
-                        } else if (response == 'Success') {
-
-                            document.querySelector('#firstnameAdd').value = "";
-                            document.querySelector('#secondnameAdd').value = "";
-                            document.querySelector('#phonenumberAdd').value = "";
-                            document.querySelector('#emailAdd').value = "";
-                            document.querySelector('#passwordAdd').value = "";
-                            loadUsers();
-
-                            document.querySelector('.modal').style.display = "none";
-                            document.querySelector('.layout').style.filter = "none";
-                        } else if (response == 'Error') {
-                            document.querySelector('#addUserError').innerHTML = "Something wrong happened check the fields and try again";
-                        }
-
-
-
-                    }
-                };
-
-                xhttp.open("POST", "admin.php", true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send(`addUser&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}&password=${tenantPassword}`);
-
-
-            }else{
-                document.querySelector('#addUserError').innerHTML = "Fill in all the fiel";
-            }
-
-
-
-        });
 
 
 
@@ -363,8 +344,6 @@ if(isset($_SESSION['username'])){
                 // console.log(value);
                 value.addEventListener('click', function() {
                     //   console.log(value.innerText);
-                    document.querySelector('.modal').style.display = "block";
-                    document.querySelector('.layout').style.filter = "blur(3px)";
                     document.querySelector('#addUserView').style.display = "none";
                     document.querySelector('#updateUserView').style.display = "block";
                     document.querySelector('#addUserError').innerHTML = "";
@@ -372,6 +351,7 @@ if(isset($_SESSION['username'])){
 
 
                     userID = value.innerText;
+                    window.location.href=`updateUser.php?userID=${userID}`;
 
                 });
             });
@@ -382,7 +362,6 @@ if(isset($_SESSION['username'])){
                 value.addEventListener('click', function() {
                     //   console.log(value.innerText);
                     document.querySelector('.modal').style.display = "block";
-                    document.querySelector('.layout').style.filter = "blur(3px)";
                     //selectedHouseID = value.innerText;
                     document.querySelector('#addUserView').style.display = "block";
                     document.querySelector('#updateUserView').style.display = "none";

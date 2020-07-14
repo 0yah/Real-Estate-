@@ -1,21 +1,142 @@
+<?php
+include('../server.php');
+include('./conn.php');
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rent</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../style.css">
+
 </head>
 <body>
+
+
+
+
+
+<div class="navbar">
+        <?php
+
+
+        if (isset($_SESSION['username'])) {
+
+
+            echo "
+    
+    
+    
+  <a href='index.php'>Dashboard</a>
+  
+  <div class='dropdown'>
+    <button class='dropbtn'>Houses 
+    </button>
+    <div class='dropdown-content'>
+      <a href='houses.php'>View All</a>
+      <a href='addHouse.php'>Add House</a>
+    </div>
+  </div> 
+
+  <div class='dropdown'>
+  <button class='dropbtn'>Tenants 
+  </button>
+  <div class='dropdown-content'>
+    <a href='tenants.php'>View All</a>
+    <a href='addTenant.php'>Add Tenant</a>
+  </div>
+</div> 
+  <a href='rent.php'>Rent</a>
+
+  <div class='dropdown'>
+    <button class='dropbtn'>Users 
+    </button>
+    <div class='dropdown-content'>
+      <a href='user.php'>View All</a>
+      <a href='addUser.php'>Add User</a>
+    </div>
+  </div> 
+  <a href='../logout.php'>Log Out</a>
+    
+    ";
+        }
+
+
+        ?>
+    </div>
+
+
+
+
+    
+
 <div class="layout">
-        <div id="revenue"></div>
+        <input type="date" id="from">
+        <input type="date" id="to">
+        <button id='Apply' type="button">Apply</button>
+        <div class="right">
+        <div id="revenueText"></div>
         <div class="loadRent">
 
+        </div>
         </div>
     </div>
 
 
+
 <script>
 
+var to = null;
+
+document.querySelector('#from').addEventListener('change',function(event){
+
+    to = event.target.value;
+});
+
+var from = null;
+document.querySelector('#to').addEventListener('change',function(event){
+    from = event.target.value;
+});
+
+document.querySelector('#Apply').addEventListener('click',function(){
+
+    var d = new Date(from);
+    console.log(d.getDate);
+
+    console.log(from,to);
+
+    if(from != null && to!=null){
+        var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        // console.log(this.responseText);
+
+        var data = JSON.parse(this.responseText);
+        console.log(data);
+        var rent = data.records;
+        var revenue = data.revenue[0].Revenue;
+        if(!revenue){
+            revenue = 0;
+        }
+        document.querySelector('#revenueText').innerHTML = `KES ${revenue}`;
+        generateTable(".loadRent", rent);
+
+    }
+};
+
+xhttp.open('GET', `admin.php?loadRent&from=${from}&to=${to}`, true);
+xhttp.send();
+
+
+
+
+    }
+});
 
 function generateTable(target, data) {
             var body = document.querySelector(target);
@@ -66,12 +187,9 @@ function generateTable(target, data) {
 
             } else {
                 var errorMessage = document.createElement('span');
-                if(selectedTenantID){
-                    errorMessage.innerHTML = 'No Rent Payments Found';
-                }else{
-                    errorMessage.innerHTML = 'No Rent Found';
-                }
-
+              
+                    errorMessage.innerHTML = `No Rent Found for Period ${from} - ${to}`;
+              
 
                 body.appendChild(errorMessage);
 
@@ -96,7 +214,7 @@ xhttp.onreadystatechange = function() {
         console.log(data);
         var rent = data.records;
         var revenue = data.revenue[0].Revenue;
-        document.querySelector('#revenue').innerHTML = `KES ${revenue}`;
+        document.querySelector('#revenueText').innerHTML = `KES ${revenue}`;
         generateTable(".loadRent", rent);
 
     }

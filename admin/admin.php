@@ -38,21 +38,21 @@ if (isset($_GET['loadHouses'])) {
     //$Status = 1;
 
     if ($Status == 1) {
-        $sql_get_house = "SELECT HouseID As 'ID',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Available'";
+        $sql_get_house = "SELECT HouseID As 'ID',HouseNo As 'House No',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Available'";
     } else if ($Status == 2) {
 
-        $sql_get_house = "SELECT HouseID As 'ID',BedRooms As 'Bed Rooms' ,Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Occupied'";
+        $sql_get_house = "SELECT HouseID As 'ID',HouseNo As 'House No',BedRooms As 'Bed Rooms' ,Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Occupied'";
     } else if ($Status == 3) {
 
-        $sql_get_house = "SELECT HouseID As 'ID',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Maintainance'";
+        $sql_get_house = "SELECT HouseID As 'ID',HouseNo As 'House No',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Maintainance'";
     } else if ($Status == 4) {
 
-        $sql_get_house = "SELECT HouseID As 'ID',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Out of Service'";
+        $sql_get_house = "SELECT HouseID As 'ID',HouseNo As 'House No',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Out of Service'";
     } else if ($Status == 5) {
 
-        $sql_get_house = "SELECT HouseID As 'ID',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Booked'";
+        $sql_get_house = "SELECT HouseID As 'ID',HouseNo As 'House No',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house` WHERE HouseStatus = 'Booked'";
     } else {
-        $sql_get_house = "SELECT  HouseID As 'ID',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house`";
+        $sql_get_house = "SELECT  HouseID As 'ID',HouseNo As 'House No',BedRooms As 'Bed Rooms',Area,Rent,HouseStatus As 'Status' FROM `house`";
     }
 
 
@@ -213,7 +213,7 @@ if (isset($_GET['loadTenantInfo'])) {
         $TenantInfo[] = $row;
     }
 
-    $sql_house_info = "SELECT house.HouseID,house.HouseStatus,house.BedRooms,house.Area,house.Rent from tenant JOIN house ON house.HouseID = tenant.HouseID WHERE tenant.TenantID = '$tenantID'";
+    $sql_house_info = "SELECT house.HouseID,house.HouseNo,house.HouseStatus,house.BedRooms,house.Area,house.Rent from tenant JOIN house ON house.HouseID = tenant.HouseID WHERE tenant.TenantID = '$tenantID'";
 
     $result = $database_connection->query($sql_house_info);
 
@@ -258,7 +258,7 @@ if (isset($_GET['loadHouseInfo'])) {
     JOIN tenant ON tenant.HouseID = house.HouseID
     JOIN user ON user.UserID = tenant.UserID
     
-    WHERE house.HouseID = 1 AND
+    WHERE house.HouseID = $houseID AND
     house.HouseStatus = 'Occupied' OR house.HouseStatus = 'Booked'";
 
     $result = $database_connection->query($sql_get_tenant_info);
@@ -390,6 +390,14 @@ if(isset($_POST['updateUser'])){
 
     $sql_update_user = "UPDATE `user` SET `FirstName` = '$firstname', `SecondName` = '$secondname', `PhoneNumber` = '$phonenumber', `Email` = '$email', `Pass` = '$password' WHERE `user`.`UserID` = $user_id";
     mysqli_query($database_connection, $sql_update_user);
+
+    
+    $deleted_rows = $database_connection->affected_rows;
+    if($deleted_rows > 0){
+        echo 'Success';
+    }else{
+        echo 'Error';
+    }
     
 }
 
@@ -479,8 +487,22 @@ if(isset($_POST['addRent'])){
 
 if(isset($_GET['loadRent'])){
    
+
+    if(isset( $_GET['from']) && isset($_GET['to'])){
+        $from = $_GET['from'];
+        $to = $_GET['to'];
+        $sql_load_rent = "SELECT rent.RentID as 'ID',house.HouseID as 'House No',CONCAT(tenant.FirstName,' ',tenant.SecondName) As 'Name',rent.Amount,CONCAT(MONTHNAME(rent.Month),'-',Year(rent.Month)) as 'Month' FROM `rent` JOIN tenant on tenant.TenantID = rent.TenantID JOIN house on house.HouseID = rent.HouseID 
+        WHERE rent.Month BETWEEN CAST('$from' AS DATE)  AND CAST('$to' AS DATE) 
+
+        ORDER BY rent.Month DESC";
+
+$sql_revenue = "SELECT SUM(Amount) as 'Revenue' FROM `rent` WHERE rent.Month BETWEEN CAST('$from' AS DATE)  AND CAST('$to' AS DATE)";
+  
+    }else{
+        $sql_load_rent = "SELECT rent.RentID as 'ID',house.HouseID as 'House No',CONCAT(tenant.FirstName,' ',tenant.SecondName) As 'Name',rent.Amount,CONCAT(MONTHNAME(rent.Month),'-',Year(rent.Month)) as 'Month' FROM `rent` JOIN tenant on tenant.TenantID = rent.TenantID JOIN house on house.HouseID = rent.HouseID ORDER BY rent.Month DESC";
+        $sql_revenue = "SELECT SUM(Amount) as 'Revenue' FROM `rent`";
+    }
    
-    $sql_load_rent = "SELECT rent.RentID as 'ID',house.HouseID as 'House No',CONCAT(tenant.FirstName,' ',tenant.SecondName) As 'Name',rent.Amount,CONCAT(MONTHNAME(rent.Month),'-',Year(rent.Month)) as 'Month' FROM `rent` JOIN tenant on tenant.TenantID = rent.TenantID JOIN house on house.HouseID = house.HouseID ORDER BY rent.Month DESC";
     $result = $database_connection->query($sql_load_rent);
 
     //Initialize array variable
@@ -493,7 +515,7 @@ if(isset($_GET['loadRent'])){
 
 
 
-    $sql_revenue = "SELECT SUM(Amount) as 'Revenue' FROM `rent`";
+
 
     $result = $database_connection->query($sql_revenue);
 
@@ -515,4 +537,24 @@ if(isset($_GET['loadRent'])){
     $myJSONResult = json_encode($myResult);
     echo $myJSONResult;
 
+}
+
+
+if(isset($_GET['tenantRentHistory'])){
+
+    $tenantID = $_GET['tenantID'];
+    $sql_tenant_rent_history = "SELECT house.HouseNo as 'House No', rent.Amount,CONCAT(MONTHNAME(rent.Month),'-',Year(rent.Month)) as 'Month' from tenant JOIN rent on rent.TenantID = tenant.TenantID JOIN house on house.HouseID = tenant.HouseID WHERE tenant.TenantID = $tenantID";
+
+    $result = $database_connection->query($sql_tenant_rent_history);
+
+    //Initialize array variable
+    $dbdata = array();
+
+    //Fetch into associative array
+    while ($row = $result->fetch_assoc()) {
+        $dbdata[] = $row;
+    }
+
+    //Print array in JSON format
+    echo json_encode($dbdata);
 }

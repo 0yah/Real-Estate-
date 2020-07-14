@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Registration system PHP and MySQL</title>
+  <title>Login</title>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
@@ -10,7 +10,7 @@
   	<h2>Login</h2>
   </div>
 	 
-  <form method="post" action="login.php">
+  <form class='form' method="post" action="login.php">
   	<?php include('errors.php'); ?>
   	<div class="input-group">
   		<label>Email:</label>

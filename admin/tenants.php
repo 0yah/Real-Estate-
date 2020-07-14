@@ -89,23 +89,63 @@ include('./conn.php');
 
         }
     </style>
+        <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
 
+
+<div class="navbar">
+        <?php
+
+
+        if (isset($_SESSION['username'])) {
+
+
+            echo "
+    
+    
+    
+  <a href='index.php'>Dashboard</a>
+  
+  <div class='dropdown'>
+    <button class='dropbtn'>Houses 
+    </button>
+    <div class='dropdown-content'>
+      <a href='houses.php'>View All</a>
+      <a href='addHouse.php'>Add House</a>
+    </div>
+  </div> 
+
+  <div class='dropdown'>
+  <button class='dropbtn'>Tenants 
+  </button>
+  <div class='dropdown-content'>
+    <a href='tenants.php'>View All</a>
+    <a href='addTenant.php'>Add Tenant</a>
+  </div>
+</div> 
+  <a href='rent.php'>Rent</a>
+
+  <div class='dropdown'>
+    <button class='dropbtn'>Users 
+    </button>
+    <div class='dropdown-content'>
+      <a href='user.php'>View All</a>
+      <a href='addUser.php'>Add User</a>
+    </div>
+  </div> 
+  <a href='../logout.php'>Log Out</a>
+    
+    ";
+        }
+
+
+        ?>
+    </div>
+
     <div class="layout">
-        <div class="left">
-            <nav class="nav">
-                <ul>
-                    <li><a href="addHouse.php">Add House</a></li>
-                    <li><a href="addTenant.php">Add Tenant</a></li>
-                    <li><a href="houses.php">Houses</a></li>
-                    <li><a href="tenants.php">Tenants</a></li>
-                    <li><a href="rent.php">Rent</a></li>
-                    <li><a href="../logout.php">Log out</a></li>
-                </ul>
-            </nav>
-        </div>
+        
         <div class="right">
             <div class="loadTenants">
 
@@ -121,6 +161,7 @@ include('./conn.php');
         <div class="modal-body">
             <div class=".houseInfo">
                 <span id="HouseID"></span>
+                <span id="HouseNo"></span>
                 <span id="HouseRent"></span>
                 <span id="HouseStatus"></span>
             </div>
@@ -387,14 +428,17 @@ include('./conn.php');
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    // console.log(this.responseText);
+                    console.log(this.responseText);
 
                     var data = JSON.parse(this.responseText);
                     selectedHouseID = data.House[0].HouseID;
-                    document.querySelector('#HouseID').innerHTML = data.House[0].HouseID;
-                    document.querySelector('#HouseRent').innerHTML = data.House[0].Rent;
-                    document.querySelector('#HouseStatus').innerHTML = data.House[0].HouseStatus;
-                    console.log(data.Rent);
+                    
+
+                    //document.querySelector('#HouseID').innerHTML = `House ID: ${data.House[0].HouseID}`;
+                    document.querySelector('#HouseNo').innerHTML = `House No: ${data.House[0].HouseNo}`;
+                    document.querySelector('#HouseRent').innerHTML = `Rent: ${data.House[0].Rent}`;
+                    document.querySelector('#HouseStatus').innerHTML = `Status: ${data.House[0].HouseStatus}`;
+                    //console.log(data.Rent);
                     generateTable(".rentHistory", data.Rent);
 
                 }
@@ -423,8 +467,10 @@ include('./conn.php');
                 // console.log(value);
                 value.addEventListener('click', function() {
                     console.log(value.innerText);
-                    document.querySelector('.modal').style.display = "block";
                     selectedTenantID = value.innerText;
+                   
+                    window.location.assign(`updateTenant.php?tenantID=${selectedTenantID}`);
+                    document.querySelector('.modal').style.display = "block";
                     loadTenantInfo(selectedTenantID);
 
                 });

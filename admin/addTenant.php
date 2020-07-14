@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-
+    <link rel="stylesheet" href="../style.css">
     <style>
         body {
             margin: 0px;
@@ -83,68 +83,95 @@
 
 <body>
 
-<nav class="nav">
-                <ul>
-<?php
-if(isset($_SESSION['username'])){
-    echo '<li><a href="addHouse.php">Add House</a></li>';
-    echo '<li><a href="houses.php">Houses</a></li>';
-    echo '<li><a href="tenants.php">Tenants</a></li>';
-    echo '<li><a href="rent.php">Rent</a></li>';
-    echo '<li><a href="../logout.php">Log out</a></li>'; 
-
-}
-?>
 
 
-                </ul>
-            </nav>
+<div class="navbar">
+        <?php
 
 
+        if (isset($_SESSION['username'])) {
 
 
-    <div class="layout">
-        <div class="loadedHouses">
-
-        </div>
-        <form>
-            <input id="numberRooms" type="number" min='1' placeholder="Number of bedrooms" />
-            <input id="numberArea" type="number" min='1' placeholder="Area Sqft" />
-            <button id="findHouseBtn" type="button">Find</button>
-        </form>
-
-        <div class="selectHouse">
-
-        </div>
-        <div class="houseDetails">
-            <span id="houseCourt"></span>
-            <span id="houseNumber"></span>
-            <span id="houseBedrooms"></span>
-            <span id="houseStatus"></span>
-        </div>
-
-
+            echo "
+    
+    
+    
+  <a href='index.php'>Dashboard</a>
+  
+  <div class='dropdown'>
+    <button class='dropbtn'>Houses 
+    </button>
+    <div class='dropdown-content'>
+      <a href='houses.php'>View All</a>
+      <a href='addHouse.php'>Add House</a>
     </div>
-    <div class="modal">
-        <div class="modal-header">
-            <span id="modal-close">X</span>
-            <div>Allocate House</div>
-        </div>
-        <div class="modal-body">
-        <form>
-            <input id="firstname" placeholder="First Name" type="text" />
-            <input id="secondname" placeholder="Second Name" type="text" />
-            <input id="phonenumber" placeholder="Phone Number" type="text" />
-            <input id="email" placeholder="E-mail" type="email" />
+  </div> 
+
+  <div class='dropdown'>
+  <button class='dropbtn'>Tenants 
+  </button>
+  <div class='dropdown-content'>
+    <a href='tenants.php'>View All</a>
+    <a href='addTenant.php'>Add Tenant</a>
+  </div>
+</div> 
+  <a href='rent.php'>Rent</a>
+
+  <div class='dropdown'>
+    <button class='dropbtn'>Users 
+    </button>
+    <div class='dropdown-content'>
+      <a href='user.php'>View All</a>
+      <a href='addUser.php'>Add User</a>
+    </div>
+  </div> 
+  <a href='../logout.php'>Log Out</a>
+    
+    ";
+        }
+
+
+        ?>
+    </div>
+
+
+
+    <form class="form">
+        <input type="hidden" id="addTenantHouseID" value=<?php $houseID = $_GET['houseID']; echo "$houseID";?>>
+    
+    <div class="input-group">
+    <label>First Name</label>
+            <input id="firstname" type="text" />
+    </div>
+
+
+    <div class="input-group">
+    <label>Second Name</label>
+    <input id="secondname" type="text" />
+    </div>
+
+    <div class="input-group">
+    <label>Phone Number</label>
+    <input id="phonenumber" type="text" />
+    </div>
+
+    <div class="input-group">
+    <label>Email</label>
+    <input id="email"  type="email" />
+           
+    </div>
+
+
+
+
             <div id="addTenantError"></div>
-            <button type="button" id="addNewTenant">Add Tenant</button>
+            <button  class='btn'type="button" id="addNewTenant">Add Tenant</button>
         </form>
 
-        </div>
-        <div class="modal-footer">
 
-        </div>
-    </div>
+
+
+
 
 </body>
 
@@ -157,7 +184,8 @@ if(isset($_SESSION['username'])){
         var tenantsecondName = document.querySelector('#secondname').value;
         var tenantphoneNumber = document.querySelector('#phonenumber').value;
         var tenantEmail = document.querySelector('#email').value;
-
+        var tenantID = document.querySelector('#addTenantHouseID').value;
+        
 
         if(tenantfirstName != '' && tenantEmail != '' && tenantsecondName != '' && tenantphoneNumber !=''){
      
@@ -184,7 +212,7 @@ if(isset($_SESSION['username'])){
 
         xhttp.open("POST", "admin.php", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(`newTenant&houseID=${selectedHouseID}&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}`);
+        xhttp.send(`newTenant&houseID=${tenantID}&firstname=${tenantfirstName}&secondname=${tenantsecondName}&phonenumber=${tenantphoneNumber}&email=${tenantEmail}`);
 
 
         }else{

@@ -11,23 +11,65 @@ include('../server.php');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
 
+
+
+<div class="navbar">
+        <?php
+
+
+        if (isset($_SESSION['username'])) {
+
+
+            echo "
+    
+    
+    
+  <a href='index.php'>Dashboard</a>
+  
+  <div class='dropdown'>
+    <button class='dropbtn'>Houses 
+    </button>
+    <div class='dropdown-content'>
+      <a href='houses.php'>View All</a>
+      <a href='addHouse.php'>Add House</a>
+    </div>
+  </div> 
+
+  <div class='dropdown'>
+  <button class='dropbtn'>Tenants 
+  </button>
+  <div class='dropdown-content'>
+    <a href='tenants.php'>View All</a>
+    <a href='addTenant.php'>Add Tenant</a>
+  </div>
+</div> 
+  <a href='rent.php'>Rent</a>
+
+  <div class='dropdown'>
+    <button class='dropbtn'>Users 
+    </button>
+    <div class='dropdown-content'>
+      <a href='user.php'>View All</a>
+      <a href='addUser.php'>Add User</a>
+    </div>
+  </div> 
+  <a href='../logout.php'>Log Out</a>
+    
+    ";
+        }
+
+
+        ?>
+    </div>
+
+
     <div class="layout">
-        <div class="left">
-            <nav class="nav">
-                <ul>
-                    <li><a href="addHouse.php">Add House</a></li>
-                    <li><a href="addTenant.php">Add Tenant</a></li>
-                    <li><a href="houses.php">Houses</a></li>
-                    <li><a href="tenants.php">Tenants</a></li>
-                    <li><a href="rent.php">Rent</a></li>
-                    <li><a href="../logout.php">Log out</a></li>
-                </ul>
-            </nav>
-        </div>
+       
         <div class="right">
             <div class="summary">
                 <div id="revenue"></div>
